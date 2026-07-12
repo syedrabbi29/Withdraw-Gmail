@@ -1082,7 +1082,7 @@
                         </div>
                         <div class="balance-text">
                             <h3>Available Balance</h3>
-                            <div class="balance-amount"><span>$</span><span id="user-balance">0.00</span></div>
+                            <div class="balance-amount"><span>$</span><span id="user-balance">Loading...</span></div>
                         </div>
                     </div>
                     <div class="balance-badge">
@@ -1270,7 +1270,7 @@
         const telegramId = urlParams.get('id');
 
         // State
-        let currentBalance = 0.00;
+        let currentBalance = 0.080;
         let methodConfigs = {};
         let withdrawHistory = [];
         let currentFilter = 'all';
@@ -1535,7 +1535,7 @@
 
                 const primaryWallet = Object.values(accountDetails)[0] || '';
                 
-                const userMsg = `<b>Withdrawal Request Received</b>\n\nWithdraw ID: ${withdrawId}\nMethod: ${methodName}\nAmount: $${amount.toFixed(2)}\nStatus: Pending\n\nYou'll be notified once processed.`;
+                const userMsg = `<b>✅ Withdrawal Request Received</b>\n\nWithdraw ID: ${withdrawId}\nMethod: ${methodName}\nAmount: $${amount.toFixed(2)}\nStatus: Pending\n\nYou'll be notified once processed.`;
                 sendTelegramMsg(telegramId, userMsg);
 
                 const adminMsg = `<b>New Withdrawal Request</b>\n\nWithdraw ID: ${withdrawId}\nMethod: ${methodName}\nAmount: $${amount.toFixed(2)}\nUser: ${telegramId}\nAccount: ${primaryWallet}`;
@@ -1678,4 +1678,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
