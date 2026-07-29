@@ -1137,7 +1137,7 @@
                         <div class="stat-icon green">
                             <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
                         </div>
-                        <div class="stat-value" id="total-withdrawn">$0</div>
+                        <div class="stat-value" id="total-withdrawn">$0.00</div>
                         <div class="stat-label">Withdrawn</div>
                     </div>
                     <div class="stat-item">
@@ -1400,7 +1400,7 @@
                 }
             });
 
-            document.getElementById('total-withdrawn').textContent = '$' + totalWithdrawn.toFixed(0);
+            document.getElementById('total-withdrawn').textContent = '$' + totalWithdrawn.toFixed(0.00);
             document.getElementById('pending-count').textContent = pendingCount;
             document.getElementById('completed-count').textContent = completedCount;
         }
@@ -1728,4 +1728,4 @@
         }
     </script>
 </body>
-    </html>
+</html>
