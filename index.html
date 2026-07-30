@@ -51,6 +51,10 @@
             --radius-xl: 22px;
 
             --mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, monospace;
+
+            /* skeleton */
+            --sk-base: rgba(148, 176, 199, 0.08);
+            --sk-shine: rgba(148, 176, 199, 0.20);
         }
 
         html, body {
@@ -75,12 +79,164 @@
             z-index: 0;
         }
 
+        /* ================================================================
+           SPLASH / SKELETON LOADER
+           Mirrors the app's real layout with shimmering placeholder blocks
+           so the Firebase fetch never shows as a bare/blank state.
+        ================================================================= */
+        .splash {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: var(--bg-primary);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: opacity 0.45s ease, visibility 0.45s ease;
+        }
+
+        .splash.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .splash-inner {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sk {
+            position: relative;
+            overflow: hidden;
+            background: var(--sk-base);
+            border-radius: var(--radius-md);
+        }
+
+        .sk::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: translateX(-100%);
+            background: linear-gradient(90deg, transparent 0%, var(--sk-shine) 50%, transparent 100%);
+            animation: shimmer 1.6s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+
+        .sk-line { height: 12px; border-radius: 7px; }
+
+        /* -- header row, same geometry as .header-content -- */
+        .sk-header-bar {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sk-header-left { display: flex; align-items: center; gap: 12px; }
+        .sk-icon-box { width: 42px; height: 42px; border-radius: 13px; flex-shrink: 0; }
+        .sk-header-lines { display: flex; flex-direction: column; gap: 8px; }
+        .sk-chip { width: 74px; height: 34px; border-radius: 24px; flex-shrink: 0; }
+
+        /* -- card shell matching .balance-card / .section-card -- */
+        .sk-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            margin-bottom: 16px;
+            padding: 20px;
+        }
+
+        .sk-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .sk-card-left { display: flex; align-items: center; gap: 12px; }
+        .sk-icon-round { width: 46px; height: 46px; border-radius: var(--radius-md); flex-shrink: 0; }
+        .sk-icon-sm { width: 38px; height: 38px; border-radius: var(--radius-sm); flex-shrink: 0; }
+        .sk-pill { width: 68px; height: 26px; border-radius: 20px; flex-shrink: 0; }
+
+        /* -- balance card stat row, same 3-column layout as .stats-row -- */
+        .sk-stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding-top: 16px;
+        }
+
+        .sk-stat { text-align: center; }
+        .sk-stat-icon { width: 30px; height: 30px; border-radius: 10px; margin: 0 auto 8px; }
+        .sk-stat-line { height: 12px; border-radius: 6px; margin: 0 auto 6px; width: 60%; }
+        .sk-stat-label { height: 8px; border-radius: 5px; margin: 0 auto; width: 75%; }
+
+        /* -- full-width control bar, same height as .form-select / .form-input -- */
+        .sk-input-bar { height: 54px; border-radius: var(--radius-md); }
+        .sk-input-bar.tall { height: 58px; margin-bottom: 12px; }
+
+        /* -- quick amount row, same 5-pill layout -- */
+        .sk-quick-row { display: flex; gap: 8px; margin-top: 12px; }
+        .sk-quick-row .sk { flex: 1; height: 42px; border-radius: var(--radius-sm); }
+
+        /* -- history header + list items -- */
+        .sk-history-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .sk-history-left { display: flex; align-items: center; gap: 10px; }
+        .sk-icon-hist { width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; }
+        .sk-filter-pill { width: 78px; height: 30px; border-radius: 20px; flex-shrink: 0; }
+
+        .sk-history-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .sk-history-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .sk-method { display: flex; align-items: center; gap: 12px; }
+        .sk-method-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); flex-shrink: 0; }
+        .sk-method-lines { display: flex; flex-direction: column; gap: 7px; }
+        .sk-amount-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        .sk-amount-line { width: 56px; height: 15px; border-radius: 6px; }
+        .sk-status-pill { width: 58px; height: 18px; border-radius: 20px; }
+        .sk-detail-block { height: 40px; border-radius: var(--radius-sm); }
+
         .app-container {
             position: relative;
             z-index: 1;
             max-width: 100%;
             min-height: 100vh;
             padding-bottom: 108px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .app-container.ready {
+            opacity: 1;
         }
 
         /* ========== Header ========== */
@@ -204,6 +360,7 @@
             border: 1px solid var(--border-color);
             position: relative;
             overflow: visible;
+            box-shadow: 0 20px 44px rgba(0, 0, 0, 0.28);
         }
 
         .balance-card::before {
@@ -384,6 +541,7 @@
             padding: 20px;
             margin-bottom: 16px;
             border: 1px solid var(--border-color);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
         }
 
         .section-header {
@@ -449,6 +607,11 @@
             font-size: 11px;
             font-family: var(--mono);
             color: var(--text-tertiary);
+        }
+
+        #min-amount-label {
+            color: var(--error);
+            font-weight: 700;
         }
 
         .input-wrapper {
@@ -1089,7 +1252,138 @@
     </style>
 </head>
 <body>
-    <div class="app-container">
+
+    <!-- ================= SKELETON SPLASH SCREEN ================= -->
+    <!-- Mirrors this page's own layout (header / balance card / method
+         card / amount card / history list) rather than a generic grid,
+         so the loading state already looks like our app. -->
+    <div class="splash" id="splash">
+        <!-- header skeleton -->
+        <div class="sk-header-bar">
+            <div class="sk-header-left">
+                <div class="sk sk-icon-box"></div>
+                <div class="sk-header-lines">
+                    <div class="sk sk-line" style="width: 110px;"></div>
+                    <div class="sk sk-line" style="width: 74px; height: 9px;"></div>
+                </div>
+            </div>
+            <div class="sk sk-chip"></div>
+        </div>
+
+        <div class="splash-inner">
+            <!-- balance card skeleton -->
+            <div class="sk-card">
+                <div class="sk-card-top">
+                    <div class="sk-card-left">
+                        <div class="sk sk-icon-round"></div>
+                        <div class="sk-header-lines">
+                            <div class="sk sk-line" style="width: 90px; height: 10px;"></div>
+                            <div class="sk sk-line" style="width: 120px; height: 24px;"></div>
+                        </div>
+                    </div>
+                    <div class="sk sk-pill"></div>
+                </div>
+                <div class="ticket-perforation"></div>
+                <div class="sk-stats-row">
+                    <div class="sk-stat">
+                        <div class="sk sk-stat-icon"></div>
+                        <div class="sk sk-stat-line"></div>
+                        <div class="sk sk-stat-label"></div>
+                    </div>
+                    <div class="sk-stat">
+                        <div class="sk sk-stat-icon"></div>
+                        <div class="sk sk-stat-line"></div>
+                        <div class="sk sk-stat-label"></div>
+                    </div>
+                    <div class="sk-stat">
+                        <div class="sk sk-stat-icon"></div>
+                        <div class="sk sk-stat-line"></div>
+                        <div class="sk sk-stat-label"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- payment method card skeleton -->
+            <div class="sk-card">
+                <div class="sk-card-top" style="margin-bottom: 20px;">
+                    <div class="sk-card-left">
+                        <div class="sk sk-icon-sm"></div>
+                        <div class="sk-header-lines">
+                            <div class="sk sk-line" style="width: 120px;"></div>
+                            <div class="sk sk-line" style="width: 160px; height: 9px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sk sk-input-bar"></div>
+            </div>
+
+            <!-- amount card skeleton -->
+            <div class="sk-card">
+                <div class="sk-card-top" style="margin-bottom: 20px;">
+                    <div class="sk-card-left">
+                        <div class="sk sk-icon-sm"></div>
+                        <div class="sk-header-lines">
+                            <div class="sk sk-line" style="width: 140px;"></div>
+                            <div class="sk sk-line" style="width: 170px; height: 9px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sk sk-input-bar tall"></div>
+                <div class="sk-quick-row">
+                    <div class="sk"></div>
+                    <div class="sk"></div>
+                    <div class="sk"></div>
+                    <div class="sk"></div>
+                    <div class="sk"></div>
+                </div>
+            </div>
+
+            <!-- history skeleton -->
+            <div class="sk-history-head">
+                <div class="sk-history-left">
+                    <div class="sk sk-icon-hist"></div>
+                    <div class="sk sk-line" style="width: 60px;"></div>
+                </div>
+                <div class="sk sk-filter-pill"></div>
+            </div>
+
+            <div class="sk-history-item">
+                <div class="sk-history-top">
+                    <div class="sk-method">
+                        <div class="sk sk-method-icon"></div>
+                        <div class="sk-method-lines">
+                            <div class="sk sk-line" style="width: 92px; height: 12px;"></div>
+                            <div class="sk sk-line" style="width: 70px; height: 9px;"></div>
+                        </div>
+                    </div>
+                    <div class="sk-amount-side">
+                        <div class="sk sk-amount-line"></div>
+                        <div class="sk sk-status-pill"></div>
+                    </div>
+                </div>
+                <div class="sk sk-detail-block"></div>
+            </div>
+
+            <div class="sk-history-item">
+                <div class="sk-history-top">
+                    <div class="sk-method">
+                        <div class="sk sk-method-icon"></div>
+                        <div class="sk-method-lines">
+                            <div class="sk sk-line" style="width: 78px; height: 12px;"></div>
+                            <div class="sk sk-line" style="width: 60px; height: 9px;"></div>
+                        </div>
+                    </div>
+                    <div class="sk-amount-side">
+                        <div class="sk sk-amount-line"></div>
+                        <div class="sk sk-status-pill"></div>
+                    </div>
+                </div>
+                <div class="sk sk-detail-block"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container" id="app-container">
         <!-- Header -->
         <header class="header">
             <div class="header-content">
@@ -1335,6 +1629,36 @@
         const filterLabel = document.getElementById('filter-label');
         const minAmountLabel = document.getElementById('min-amount-label');
 
+        // ================= SPLASH / SKELETON LOADER LOGIC =================
+        // Purely presentational: hides the skeleton and reveals the real
+        // page once (a) the initial Firebase reads have all returned at
+        // least once, and (b) a minimum display time has elapsed, so the
+        // transition always feels like one clean, deliberate reveal rather
+        // than fields popping in one by one.
+        const splashEl = document.getElementById('splash');
+        const appContainerEl = document.getElementById('app-container');
+        const SPLASH_MIN_MS = 2400;
+        const splashStartedAt = Date.now();
+        const loadFlags = { balance: false, methods: false, history: false };
+
+        function markLoaded(key) {
+            loadFlags[key] = true;
+            maybeRevealApp();
+        }
+
+        function maybeRevealApp() {
+            const allLoaded = loadFlags.balance && loadFlags.methods && loadFlags.history;
+            if (!allLoaded) return;
+
+            const elapsed = Date.now() - splashStartedAt;
+            const remaining = Math.max(0, SPLASH_MIN_MS - elapsed);
+
+            setTimeout(() => {
+                splashEl.classList.add('hide');
+                appContainerEl.classList.add('ready');
+            }, remaining);
+        }
+
         // Initialize
         if (telegramId) {
             userUidEl.textContent = telegramId;
@@ -1342,13 +1666,23 @@
         } else {
             userUidEl.textContent = 'Not Found';
             showError('amount', 'Telegram ID not found');
+            // Nothing to fetch without an ID — reveal after the minimum delay only.
+            loadFlags.balance = true;
+            loadFlags.methods = true;
+            loadFlags.history = true;
+            maybeRevealApp();
         }
 
         function initializeApp() {
+            let balanceFirstLoad = true;
+            let methodsFirstLoad = true;
+            let historyFirstLoad = true;
+
             // Load balance
             database.ref('users/' + telegramId + '/balance').on('value', (snapshot) => {
                 currentBalance = snapshot.val() ? parseFloat(snapshot.val()) : 0.00;
                 userBalanceEl.textContent = currentBalance.toFixed(2);
+                if (balanceFirstLoad) { balanceFirstLoad = false; markLoaded('balance'); }
             });
 
             // Load methods
@@ -1369,6 +1703,7 @@
                         }
                     });
                 }
+                if (methodsFirstLoad) { methodsFirstLoad = false; markLoaded('methods'); }
             });
 
             // Load admin chat ID
@@ -1382,6 +1717,7 @@
                 withdrawHistory = data ? Object.entries(data).map(([key, val]) => ({ id: key, ...val })).reverse() : [];
                 updateStats();
                 renderHistory();
+                if (historyFirstLoad) { historyFirstLoad = false; markLoaded('history'); }
             });
         }
 
@@ -1400,7 +1736,7 @@
                 }
             });
 
-            document.getElementById('total-withdrawn').textContent = '$' + totalWithdrawn.toFixed(0.00);
+            document.getElementById('total-withdrawn').textContent = '$' + totalWithdrawn.toFixed(2);
             document.getElementById('pending-count').textContent = pendingCount;
             document.getElementById('completed-count').textContent = completedCount;
         }
@@ -1728,4 +2064,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
